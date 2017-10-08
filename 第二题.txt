@@ -1,0 +1,351 @@
+一、常见的兼容问题
+	·png24位的图片在ie6浏览器上出现背景，解决方案是做成png8
+	·浏览器默认的margin和padding不同，解决方案是加一全局的*{margin:0;padding:0}
+	·IE6双边距bug块属性标签float后，又有横行的margin情况下，在ie6显示margin比设置的大
+	·浮动ie产生的双边距#box{float:left;widh:10px;margin:0 0 0 100px}
+	·这种情况之下IE会产生20px的距离，解决方案是在float的标签样式控制中加入 ——_display:inline;将其转化为行内属性。(_这个符号只有ie6会识别)
+	·渐进识别的方式，从总体中逐渐排除局部。
+	·首先，巧妙的使用“\9”这一标记，将IE游览器从所有情况中分离出来。
+	·接着，再次使用“+”将IE8和IE7、IE6分离开来，这样IE8已经独立识别。
+	·css
+	.bb{
+		background-color:#f1ee18;/*所有识别*/
+		.background-color:#00deff\9; /*IE6、7、8识别*/
+		+background-color:#a200ff;/*IE6、7识别*/
+		_background-color:#1e0bd1;/*IE6识别*/
+	}
+	·IE下,可以使用获取常规属性的方法来获取自定义属性,
+	·也可以使用getAttribute()获取自定义属性;
+	·Firefox下,只能使用getAttribute()获取自定义属性.
+	·解决方法:统一通过getAttribute()获取自定义属性.
+	·IE下,even对象有x,y属性,但是没有pageX,pageY属性;
+	·Firefox下,event对象有pageX,pageY属性,但是没有x,y属性.
+	·解决方法：（条件注释）缺点是在IE浏览器下可能会增加额外的HTTP请求数。
+	·Chrome 中文界面下默认会将小于 12px 的文本强制按照 12px 显示,
+	·可通过加入 CSS 属性 -webkit-text-size-adjust: none; 解决.
+	·超链接访问过后hover样式就不出现了 被点击访问过的超链接样式不在具有hover和active了解决方法是改变CSS属性的排列顺序:
+	·L-V-H-A : a:link {} a:visited {} a:hover {} a:active {}
+二、js闭包
+	闭包是指有权访问另一个函数作用域中变量的函数，创建闭包的最常见的方式就是在一个函数内创建另一个函数，通过另一个函数访问这个函数的局部变量,利用闭包可以突破作用链域，将函数内部的变量和方法传递到外部。
+	闭包的特性：
+		1.函数内再嵌套函数
+		2.内部函数可以引用外层的参数和变量
+		3.参数和变量不会被垃圾回收机制回收
+三、 什么是作用域
+	在js中每一个方法都是一个作用域，最大的作用域就是windows对象，
+	作用域中的变量和方法只能在当前作用域和当前作用域下的作用域使用
+	外面的作用域不能访问里面的作用域的变量和方法
+	js中查找变量的方式是，现在当前作用域查找，如果没有的话，就去上一级作用域中查找
+	
+四、什么是作用域链
+	作用域:首先在函数体里面找，之后在window对象里找 ，只能向上找，不能向下
+Ps: js只有函数作用域，没有块级作用域
+作用域链的作用是保证执行环境里有权访问的变量和函数是有序的，作用域链的变量只能向上访问，变量访问到window对象即被终止，作用域链向下访问变量是不被允许的
+五、什么是原型
+	每个对象都会在其内部初始化一个属性，就是prototype(原型)，当我们访问一个对象的属性时，
+如果这个对象内部不存在这个属性，那么他就会去prototype里找这个属性，这个prototype又会有自己的prototype，
+	于是就这样一直找下去，也就是我们平时所说的原型链的概念。
+	关系：instance.constructor.prototype = instance.__proto__
+
+	特点：
+	JavaScript对象是通过引用来传递的，我们创建的每个新对象实体中并没有一份属于自己的原型副本。当我们修改原型时，与之相关的对象也会继承这一改变。
+	 当我们需要一个属性的时，Javascript引擎会先看当前对象中是否有这个属性， 如果没有的话，
+	 就会查找他的Prototype对象是否有这个属性，如此递推下去，一直检索到 Object 内建对象
+六、什么是原型链
+	访问一个对象的属性时，
+如果这个对象内部不存在这个属性，那么他就会去prototype里找这个属性，这个prototype又会有自己的prototype，
+	于是就这样一直找下去，也就是我们平时所说的原型链的概念。
+七、有一个字符串 ‘james’ 如何用JS得到 ‘semaj’
+	<script>
+		var str="james";
+		var arr = [];
+		for(let i=str.length-1;i>=0;i--){
+			arr.push(str[i])
+			
+		}
+		
+		console.log(arr.join())
+	</script>
+八、当你用一个Ajax请求请求到数据并且通过拼接字符串的形式绑定到dom树上的时候 如何添加事件？
+它的实现原理是什么？
+九、什么是代理模式
+	也叫事件委托
+	事件委托就是利用事件冒泡，只指定一个事件处理程序，就可以管理某一类型的所有事件。
+十、如何改变this指向？
+	call和apply都可以改变this指向，不过call的第二个参数是散列分布，apply则可以是一个数组
+	ES5还定义了一个方法：bind()，它会创建一个函数的实例，其this值会被绑定到传给bind()函数的值
+十一、	call 和 apply 有什么区别
+	call和apply都可以改变this指向，不过call的第二个参数是散列分布，apply则可以是一个数组
+十二、如何解决跨域问题?
+	jsonp【设置回调】、iframe【document.domain】、window.name、window.postMessage、服务器上设置代理页面
+	参考：http://qiutc.me/post/cross-domain-collections.html
+十三、	css有那些属性特别消耗性能
+	将样式表放到页面顶部
+	使用CSS表达式
+	使用@import
+	使用IE的Filter
+十四、	js有哪些基本类型？
+	 Undefined、Null、Boolean、Number、String
+十五、	CSS居中都有那些方法
+	给div设置一个宽度，然后添加margin:0 auto属性
+	div{
+		width:200px;
+		margin:0 auto;
+	}
+	居中一个浮动元素
+
+	确定容器的宽高 宽500 高 300 的层
+	设置层的外边距
+	.div {
+		width:500px ; height:300px;//高度可以不设
+		margin: -150px 0 0 -250px;
+		 position:relative;         //相对定位
+		background-color:pink;     //方便看效果
+		left:50%;
+		top:50%;
+	 }
+	让绝对定位的div居中
+
+	position: absolute;
+	width: 1200px;
+	background: none;
+	margin: 0 auto;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+十六、	用 New调用一个 function 的时候 function内部的this 指的是谁？
+作为构造函数调用，this 指代new 出的对象
+	JS中this的四种用法
+	1.在一般函数方法中使用 this 指代全局对象
+		function test(){
+　　　　this.x = 1;
+　　　　alert(this.x);
+　　}
+　　test(); // 1
+	2.作为对象方法调用，this 指代上级对象
+
+	复制代码
+	function test(){
+	　　alert(this.x);
+	}
+	var o = {};
+	o.x = 1;
+	o.m = test;
+	o.m(); // 1
+	复制代码
+	3.作为构造函数调用，this 指代new 出的对象
+
+	复制代码
+	　　function test(){
+	　　　　this.x = 1;
+	　　}
+	　　var o = new test();
+	　　alert(o.x); // 1
+		//运行结果为1。为了表明这时this不是全局对象，我对代码做一些改变：
+	　　var x = 2;
+	　　function test(){
+	　　　　this.x = 1;
+	　　}
+	　　var o = new test();
+	　　alert(x); //2
+	复制代码
+	 
+
+	4.apply 调用 ，apply方法作用是改变函数的调用对象，此方法的第一个参数为改变后调用这个函数的对象，this指代第一个参数
+
+	复制代码
+	　　var x = 0;
+	　　function test(){
+	　　　　alert(this.x);
+	　　}
+	　　var o={};
+	　　o.x = 1;
+	　　o.m = test;
+	　　o.m.apply(); //0
+	//apply()的参数为空时，默认调用全局对象。因此，这时的运行结果为0，证明this指的是全局对象。如果把最后一行代码修改为.m.apply(o); //1
+十七、	如何解决回调函数地狱问题	
+回调地狱
+对 JavaScript 程序员来说，处理回调是家常，但是处理层次过深的回调就没有那么美好了，下面的示例代码片段用了三层回调，再补脑一下更多层的场景，简直是酸爽，这就是传说中的回调地狱。
+	ES6 Promise
+	Promise 是一种异步编程的解决方案，是解决回调地狱问题的利器。
+十八、	你们上家公司使用什么来做版本管理的？
+		git、svn
+十九、	常用git命令有哪些都有什么作用？
+		git add .
+		git commit im "上传"
+		git push 
+		git log 
+		git pull
+二十、	简述什么是gulp？
+		gulp是一个基于流的构建工具，可以自动执行指定的任务，简洁且高效
+二十一、	数组对象都有那些api，字符串呢？
+            push()  pop()  join()  indexOf() 
+			shift   unshift  concat splice reverse sort slice join
+二十二、	Js中异步操作都有哪些？
+		回调函数  事件监听  发布/订阅  Promises对象
+二十三、	Jquery的链式调用是如何实现的？
+	链式操作仅仅是通过对象上的方法最后 
+	return this 
+	把对象再返回回来，对象当然可以继续调用方法啦，所以就可以链式操作了
+二十四、Jquery的优化方式有哪些？
+    1、总是使用#id去寻找element.
+	2、在Classes前面使用Tags
+    3、缓存jQuery对象
+	4、更好的利用链
+	5、使用子查询
+	6、限制直接对DOM操作
+	7、事件委托（又名：冒泡事件）
+	8、消除查询浪费
+	9、遵从$(windows).load
+	10、压缩JS
+二十五、	如何实现$().removeclass $().addclass 用代码写出来并且自己测试
+	$('ul').on("click","li",function(){
+		$(this).addClass("active").siblings().removeclass("active")
+	})
+二十六、如何实现 jquery 的class选择器 id 选择器 等选择器
+    选择器是如何准确地选取您希望应用效果的元素。
+	jQuery 元素选择器和属性选择器允许您通过标签名、属性名或内容对 HTML 元素进行选择。
+	选择器允许您对 HTML 元素组或单个元素进行操作。
+	在 HTML DOM 术语中：
+	选择器允许您对 DOM 元素组或单个 DOM 节点进行操作。
+	jQuery 元素选择器
+	jQuery 使用 CSS 选择器来选取 HTML 元素。
+	$("p") 选取 <p> 元素。
+	$("p.intro") 选取所有 class="intro" 的 <p> 元素。
+	$("p#demo") 选取所有 id="demo" 的 <p> 元素。
+	jQuery 属性选择器
+	jQuery 使用 XPath 表达式来选择带有给定属性的元素。
+	$("[href]") 选取所有带有 href 属性的元素。
+	$("[href='#']") 选取所有带有 href 值等于 "#" 的元素。
+	$("[href!='#']") 选取所有带有 href 值不等于 "#" 的元素。
+	$("[href$='.jpg']") 选取所有 href 值以 ".jpg" 结尾的元素。
+	jQuery CSS 选择器
+	jQuery CSS 选择器可用于改变 HTML 元素的 CSS 属性。
+二十七、Jquery 相对于原生js的优势是什么?
+它是 JavaScript 的一个代码库，封装了javascript并且可以兼容不同的浏览器，很多插件都是用jquery写的比如easyui,ztree。在实际开发中绝大部分都是用jquery代替js，很大程度上提高了开发的效率，不仅仅是少几行代码，对浏览器的兼容性解决得也更好
+二十八、什么是前后端分离？
+优秀的WEB架构，必定会应用一些分层设计的思想，这样可以让系统开发起来更灵活，同时后期维护也比较方便。
+二十九、什么是seo？
+搜索引擎
+三十、如何优化seo？
+合理的title、description、keywords：搜索对着三项的权重逐个减小，title值强调重点即可，重要关键词出现不要超过2次，而且要靠前，不同页面title要有所不同；description把页面内容高度概括，长度合适，不可过分堆砌关键词，不同页面description有所不同；keywords列举出重要关键词即可语义化的HTML代码，符合W3C规范：语义化代码让搜索引擎容易理解网页重要内容HTML代码放在最前：搜索引擎抓取HTML顺序是从上到下，有的搜索引擎对抓取长度有限制，保证重要内容一定会被抓取重要内容不要用js输出：爬虫不会执行js获取内容少用iframe：搜索引擎不会抓取iframe中的内容非装饰性图片必须加alt提高网站速度：网站速度是搜索引擎排序的一个重要指标
+三十一、如何使用nodejs 在后端读取图片文件并以base64的格式返回给前端
+base64的形式为“data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0。。。。”；当接收到上边的内容后，需要将data:image/png;base64,这段内容过滤掉，过滤成：“iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0。。。”；然后进行保存。
+app.post('/upload', function(req, res){
+    //接收前台POST过来的base64
+    var imgData = req.body.imgData;
+    //过滤data:URL
+    var base64Data = imgData.replace(/^data:image\/\w+;base64,/, "");
+    var dataBuffer = new Buffer(base64Data, 'base64');
+    fs.writeFile("image.png", dataBuffer, function(err) {
+        if(err){
+          res.send(err);
+        }else{
+          res.send("保存成功！");
+        }
+    });
+});
+三十二、写一个基于nodejs的路由？
+app.post('/user', (req, res) => {
+     console.log('hello user');
+    res.end('hello user');
+});
+app.get('/user', (req, res) => {
+     res.end(new Buffer('hello'));
+    res.end('hello user');
+});
+app.listen(8688, () => console.log('listen this port 8688'));
+三十三、说说seajs和require的区别
+区别：
+
+1. 对于依赖的模块，AMD 是提前执行，CMD 是延迟执行。不过 RequireJS 从 2.0
+ 开始，也改成可以延迟执行（根据写法不同，处理方式不同）。CMD 
+推崇 as lazy as possible.
+
+2. CMD 推崇依赖就近，AMD 推崇依赖前置
+
+3. AMD 的 API 默认是一个当多个用，CMD 的 API 严格区分，推崇职责单一。
+比如 AMD 里，require 分全局 require 和局部 require，都叫 require。CMD 里
+，没有全局 require，而是根据模块系统的完备性，提供 seajs.use 来实现模块系
+统的加载启动。CMD 里，每个 API 都简单纯粹。
+
+三十四、谈谈你对模块化的看法 以及它有什么优势
+所谓的模块化开发就是封装细节，提供使用接口，彼此之间互不影响，每个模块
+都是实现某一特定的功能。模块化开发的基础就是函数 
+
+三十五、H5都有那些语义化标签
+header元素  footer元素 hgroup元素 nav元素 aside元素 section元素 
+article元素
+
+三十六、我为什么要语义化命名？语义化的意义是什么？
+语意化就是根据w3c 的规定来使用html标签，这样可以是SEO对搜索引擎更友好
+语义化的HTML就是正确的标签做正确的事情，能够便于开发者阅读和写出更优雅的
+代码的同时让网络爬虫很好地解析。
+1、有利于SEO，有利于搜索引擎爬虫更好的理解我们的网页，从而获取更多的有效信息，提升网页的权重。
+
+2、在没有CSS的时候能够清晰的看出网页的结构，增强可读性。
+
+3、便于团队开发和维护，语义化的HTML可以让开发者更容易的看明白，从而提高团队的效率和协调能力。
+
+4、支持多终端设备的浏览器渲染。
+
+三十七、Canvas能做什么 都有那些api
+首先canvas只是html5中的一个便签而已，表示的意思是一个画布，它本身没有
+任何作用，就相当于是一个画板，你可以在它上面画任何你想画的东西，
+HTML5中最让人兴奋的API是canvas，它给了HTML5开发者随意涂鸦的能力。下来我们一起来了解canvas。
+        HTML5中新增了<canvas>画布标签，通过它，可以使用JavaScript在网页
+中绘制图像。<canvas>标签在网页中得到的是一个矩形空白区域，可以通过
+width和height属性来调整其宽和高
+rect() fillRect() clearRect() strokeRect()  createLinearGradient()	
+createPattern()	createRadialGradient()	addColorStop()fill()	scale()	
+rotate()translate() transform()	setTransform() stroke()	beginPath()	
+moveTo()closePath()lineTo() clip()quadraticCurveTo()bezierCurveTo()arc()arcTo()
+
+三十八、如何上传文件
+1.form表单提交2.form+iframe3.HTML5之FormData、FileReader4.flash实现
+
+三十九、如何写一个音频视屏播放器？
+略
+四十、
+			
+	
+
+		
+			
+ 
+
+		
+		
+		
+		
+		
+		
+		
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
